@@ -1,58 +1,36 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { addItem } from "../CartSlice";
-import "./ProductList.css";
+import React, { useState } from 'react';
+import './ProductList.css';
+import { useDispatch } from 'react-redux';
+import { addItem } from './CartSlice';
+import CartItem from './CartItem';
 
-function ProductList() {
+function ProductList({ onHomeClick }) {
+  const [showCart, setShowCart] = useState(false);
   const dispatch = useDispatch();
-  const [addedToCart, setAddedToCart] = useState({});
 
-  const plantsArray = [
-    {
-      name: "Aloe Vera",
-      description: "A medicinal plant known for its healing properties.",
-      cost: "$10",
-      image: "https://cdn.pixabay.com/photo/2016/04/13/21/26/aloe-vera-1329134_1280.jpg",
-      category: "Medicinal",
-    },
-    {
-      name: "Lavender",
-      description: "An aromatic plant that promotes relaxation.",
-      cost: "$12",
-      image: "https://cdn.pixabay.com/photo/2017/08/01/08/29/lavender-2561150_1280.jpg",
-      category: "Aromatic",
-    },
-    {
-      name: "Mint",
-      description: "A refreshing plant used in beverages and cooking.",
-      cost: "$8",
-      image: "https://cdn.pixabay.com/photo/2015/05/11/21/50/mint-762331_1280.jpg",
-      category: "Aromatic",
-    },
+  const plants = [
+    { name: 'Snake Plant', cost: '$15', image: 'https://cdn.pixabay.com/photo/2021/01/22/06/04/snake-plant-5939187_1280.jpg', description: 'Produces oxygen at night' },
+    { name: 'Spider Plant', cost: '$12', image: 'https://cdn.pixabay.com/photo/2018/07/11/06/47/chlorophytum-3530413_1280.jpg', description: 'Filters formaldehyde' },
   ];
 
-  const handleAddToCart = (plant) => {
-    dispatch(addItem(plant));
-    setAddedToCart((prev) => ({ ...prev, [plant.name]: true }));
-  };
-
   return (
-    <div className="product-grid">
-      {plantsArray.map((plant, index) => (
-        <div className="product-card" key={index}>
-          <img src={plant.image} alt={plant.name} />
-          <h3>{plant.name}</h3>
-          <p>{plant.description}</p>
-          <p className="price">{plant.cost}</p>
-          <button
-            className={`add-to-cart ${addedToCart[plant.name] ? "added" : ""}`}
-            disabled={addedToCart[plant.name]}
-            onClick={() => handleAddToCart(plant)}
-          >
-            {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
-          </button>
+    <div>
+      {!showCart ? (
+        <div className="product-grid">
+          {plants.map((plant) => (
+            <div className="product-card" key={plant.name}>
+              <img src={plant.image} alt={plant.name} />
+              <h3>{plant.name}</h3>
+              <p>{plant.description}</p>
+              <p>{plant.cost}</p>
+              <button onClick={() => dispatch(addItem(plant))}>Add to Cart</button>
+            </div>
+          ))}
+          <button onClick={() => setShowCart(true)}>View Cart</button>
         </div>
-      ))}
+      ) : (
+        <CartItem onContinueShopping={() => setShowCart(false)} />
+      )}
     </div>
   );
 }
